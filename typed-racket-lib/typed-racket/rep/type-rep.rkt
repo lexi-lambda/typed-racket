@@ -563,6 +563,15 @@
   [#:frees (λ (f) (combine-frees (map f tys)))]
   [#:key #f] [#:fold-rhs (*Sequence (map type-rec-id tys))])
 
+;; streams
+;; like sequences, but lazy
+;; also includes lists, but nothing else
+;; tys : stream produces this set of values at each step
+(def-type Stream ([tys (listof Type/c)])
+  [#:intern (map Rep-seq tys)]
+  [#:frees (λ (f) (combine-frees (map f tys)))]
+  [#:key #f] [#:fold-rhs (*Stream (map type-rec-id tys))])
+
 (def-type Future ([t Type/c]) [#:key 'future])
 
 ;; body: the type of the body

@@ -983,8 +983,10 @@
 [sequence-length (-poly (a) ((-seq a) . -> . -Nat))]
 [sequence-ref (-poly (a) ((-seq a) -Integer . -> . a))]
 [sequence-tail (-poly (a) ((-seq a) -Integer . -> . (-seq a)))]
-[sequence-append (-poly (a) (->* (list) (-seq a) (-seq a)))]
-[sequence-map (-poly (a b) ((a . -> . b) (-seq a) . -> . (-seq b)))]
+[sequence-append (-poly (a b) (cl->* (->* (list) (-stream a) (-stream a))
+                                     (->* (list) (-seq a) (-seq a))))]
+[sequence-map (-poly (a b) (cl->* ((a . -> . b) (-stream a) . -> . (-stream b))
+                                  ((a . -> . b) (-seq a) . -> . (-seq b))))]
 [sequence-andmap (-poly (a b) ((a . -> . b) (-seq a) . -> . (Un b (-val #t))))]
 [sequence-ormap (-poly (a b) ((a . -> . b) (-seq a) . -> . (Un b (-val #f))))]
 [sequence-for-each (-poly (a) ((a . -> . Univ) (-seq a) . -> . -Void))]
@@ -992,11 +994,41 @@
 [sequence-count (-poly (a) ((a . -> . Univ) (-seq a) . -> . -Nat))]
 [sequence-filter (-poly (a b) (cl->*
                                 ((asym-pred a Univ (-FS (-filter b 0) -top))
+                                 (-stream a)
+                                 . -> .
+                                 (-stream b))
+                                ((a . -> . Univ) (-stream a) . -> . (-stream a))
+                                ((asym-pred a Univ (-FS (-filter b 0) -top))
                                  (-seq a)
                                  . -> .
                                  (-seq b))
                                 ((a . -> . Univ) (-seq a) . -> . (-seq a))))]
-[sequence-add-between (-poly (a) ((-seq a) a . -> . (-seq a)))]
+[sequence-add-between (-poly (a b) (cl->* ((-stream a) a . -> . (-stream a))
+                                          ((-seq a) a . -> . (-seq a))))]
+
+[stream? (make-pred-ty (-stream Univ))]
+[stream-empty? (-poly (a) ((-stream a) . -> . B))]
+[stream-first (-poly (a) ((-stream a) . -> . a))]
+[stream-rest (-poly (a) ((-stream a) . -> . (-stream a)))]
+[empty-stream (-poly (a) (-stream a))]
+[stream->list (-poly (a) ((-stream a) . -> . (-lst a)))]
+[stream-length (-poly (a) ((-stream a) . -> . -Nat))]
+[stream-ref (-poly (a) ((-stream a) -Nat . -> . a))]
+[stream-tail (-poly (a) ((-stream a) -Nat . -> . (-stream a)))]
+[stream-append (-poly (a) ((-stream a) (-stream a) . -> . (-stream a)))]
+[stream-map (-poly (a b) ((a . -> . b) (-stream a) . -> . (-stream b)))]
+[stream-andmap (-poly (a b) ((a . -> . b) (-stream a) . -> . (Un b (-val #t))))]
+[stream-ormap (-poly (a b) ((a . -> . b) (-stream a) . -> . (Un b (-val #f))))]
+[stream-for-each (-poly (a) ((a . -> . Univ) (-stream a) . -> . -Void))]
+[stream-fold (-poly (a b) ((b a . -> . b) b (-stream a) . -> . b))]
+[stream-count (-poly (a) ((a . -> . Univ) (-stream a) . -> . -Nat))]
+[stream-filter (-poly (a b) (cl->*
+                                ((asym-pred a Univ (-FS (-filter b 0) -top))
+                                 (-stream a)
+                                 . -> .
+                                 (-stream b))
+                                ((a . -> . Univ) (-stream a) . -> . (-stream a))))]
+[stream-add-between (-poly (a) ((-stream a) a . -> . (-stream a)))]
 
 ;; Section 4.16 (Sets)
 [set (-poly (e) (->* (list) e (-set e)))]

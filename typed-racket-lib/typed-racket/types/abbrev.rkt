@@ -70,6 +70,7 @@
   (make-Prefab (normalize-prefab-key key (length types)) types))
 
 (define (-seq . args) (make-Sequence args))
+(define (-stream . args) (make-Stream args))
 
 (define (one-of/c . args)
   (apply Un (map -val args)))

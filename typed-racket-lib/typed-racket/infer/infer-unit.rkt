@@ -570,8 +570,6 @@
           ;; sequences are covariant
           [((Sequence: ts) (Sequence: ts*))
            (cgen/list context ts ts*)]
-          [((Listof: t) (Sequence: (list t*)))
-           (cg t t*)]
           [((Pair: t1 t2) (Sequence: (list t*)))
            (% cset-meet (cg t1 t*) (cg t2 (-lst t*)))]
           [((MListof: t) (Sequence: (list t*)))
@@ -620,6 +618,13 @@
           [((Hashtable: k v) (Sequence: (list k* v*)))
            (cgen/list context (list k v) (list k* v*))]
           [((Set: t) (Sequence: (list t*)))
+           (cg t t*)]
+          
+          [((Stream: ts) (Stream: ts*))
+           (cgen/list context ts ts*)]
+          [((Stream: ts) (Sequence: ts*))
+           (cgen/list context ts ts*)]
+          [((Listof: t) (Stream: (list t*)))
            (cg t t*)]
 
           ;; Mu's just get unfolded

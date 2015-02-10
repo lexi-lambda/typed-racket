@@ -67,35 +67,35 @@
              (-> Univ (-seq a b) (seq-vals (list a b))))))]
   ;; in-range
   [(make-template-identifier 'in-range 'racket/private/for)
-   (cl->* (-> -Byte (-seq -Byte))
-          (-> -Index (-seq -Index))
-          (-> -Fixnum (-seq -NonNegFixnum))
-          (-> -Real (-seq -Nat))
-          (->opt -PosInt -Byte [-Int] (-seq -PosByte))
-          (->opt -Nat -Byte [-Int] (-seq -Byte))
-          (->opt -PosInt -Index [-Int] (-seq -PosIndex))
-          (->opt -Nat -Index [-Int] (-seq -Index))
-          (->opt -Nat -NonNegFixnum [-Int] (-seq -NonNegFixnum))
-          (->opt -PosInt -Fixnum [-Nat] (-seq -PosFixnum))
-          (->opt -Nat -Fixnum [-Nat] (-seq -NonNegFixnum))
-          (->opt -Nat -Nat [-Int] (-seq -Nat))
-          (->opt -PosInt -Int [-Nat] (-seq -PosInt))
-          (->opt -Nat -Int [-Nat] (-seq -Nat))
+   (cl->* (-> -Byte (-stream -Byte))
+          (-> -Index (-stream -Index))
+          (-> -Fixnum (-stream -NonNegFixnum))
+          (-> -Real (-stream -Nat))
+          (->opt -PosInt -Byte [-Int] (-stream -PosByte))
+          (->opt -Nat -Byte [-Int] (-stream -Byte))
+          (->opt -PosInt -Index [-Int] (-stream -PosIndex))
+          (->opt -Nat -Index [-Int] (-stream -Index))
+          (->opt -Nat -NonNegFixnum [-Int] (-stream -NonNegFixnum))
+          (->opt -PosInt -Fixnum [-Nat] (-stream -PosFixnum))
+          (->opt -Nat -Fixnum [-Nat] (-stream -NonNegFixnum))
+          (->opt -Nat -Nat [-Int] (-stream -Nat))
+          (->opt -PosInt -Int [-Nat] (-stream -PosInt))
+          (->opt -Nat -Int [-Nat] (-stream -Nat))
           ;; could add cases that guarantee lists of negatives, etc.
-          (->opt -Int -Real [-Int] (-seq -Int))
-          (->opt -Rat -Real [-Rat] (-seq -Rat))
-          (->opt -Flonum -Real [-Flonum] (-seq -Flonum))
-          (->opt -SingleFlonum -Real [-SingleFlonum] (-seq -SingleFlonum))
-          (->opt -InexactReal -Real [-InexactReal] (-seq -InexactReal))
-          (->opt -Real -Real [-Real] (-seq -Real)))]
+          (->opt -Int -Real [-Int] (-stream -Int))
+          (->opt -Rat -Real [-Rat] (-stream -Rat))
+          (->opt -Flonum -Real [-Flonum] (-stream -Flonum))
+          (->opt -SingleFlonum -Real [-SingleFlonum] (-stream -SingleFlonum))
+          (->opt -InexactReal -Real [-InexactReal] (-stream -InexactReal))
+          (->opt -Real -Real [-Real] (-stream -Real)))]
   ;; in-naturals
   [(make-template-identifier 'in-naturals 'racket/private/for)
-   (cl->* (-> (-seq -Nat))
-          (-> -PosInt (-seq -PosInt))
-          (-> -Int (-seq -Nat)))]
+   (cl->* (-> (-stream -Nat))
+          (-> -PosInt (-stream -PosInt))
+          (-> -Int (-stream -Nat)))]
   ;; in-list
   [(make-template-identifier 'in-list 'racket/private/for)
-   (-poly (a) (-> (-lst a) (-seq a)))]
+   (-poly (a) (-> (-lst a) (-stream a)))]
   ;; in-mlist
   [(make-template-identifier 'in-mlist 'racket/private/for)
    (-poly (a) (-> (-mlst a) (-seq a)))]
@@ -171,6 +171,16 @@
   ;; check-in-port
   [(make-template-identifier 'check-in-port 'racket/private/for)
    (-> Univ Univ Univ)]
+  ;; in-stream
+  [(make-template-identifier 'in-stream 'racket/private/for)
+   (-poly (a) (-> (-stream a) (-seq a)))]
+  ;; stream-cons
+  [(make-template-identifier 'stream-eager 'racket/private/stream-cons)
+   (-poly (a) (-> a a))]
+  [(make-template-identifier 'make-stream 'racket/private/stream-cons)
+   (-poly (a) ((-mpair -Symbol (-> a)) . -> . a))]
+  [(make-template-identifier 'make-stream-pare 'racket/private/stream-cons)
+   (-poly (a) (a (-stream a) . -> . (-stream a)))]
   ;; from the expansion of `with-syntax'
   [(make-template-identifier 'apply-pattern-substitute 'racket/private/stxcase)
    (->* (list (-Syntax Univ) Univ) Univ (-Syntax Univ))]

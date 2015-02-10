@@ -187,6 +187,7 @@
 [MPairof (-poly (a b) (-mpair a b))]
 [MListof (-poly (a) (-mlst a))]
 [Sequenceof (-poly (a) (-seq a))]
+[Streamof (-poly (a) (-stream a))]
 [Thread-Cellof (-poly (a) (-thread-cell a))]
 [Custodian-Boxof (-poly (a) (make-CustodianBox a))]
 

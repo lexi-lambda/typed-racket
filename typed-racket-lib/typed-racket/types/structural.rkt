@@ -55,6 +55,7 @@
      [Syntax (#:co)]
      [Pair (#:co #:co)]
      [Sequence ((#:listof #:co))]
+     [Stream ((#:listof #:co))]
      [Function ((#:listof #:co))]
 
      [Param (#:contra #:co)]

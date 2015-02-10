@@ -297,6 +297,7 @@
   racket/port
   racket/sequence
   racket/set
+  racket/stream
   racket/string
   racket/system
   racket/tcp
@@ -2080,6 +2081,12 @@
                       [else 42])))
                 (void))
               -Void]
+        
+        [tc-e (stream? (ann 'foo Any)) -Boolean]
+        [tc-e (stream (ann 1 Integer)) (-stream -Integer)]
+        [tc-e (stream-rest (stream (ann 1 Integer))) (-stream -Integer)]
+        [tc-e (stream-cons (ann 1 Integer) empty-stream) (-stream -Integer)]
+        
         [tc-e (let ()
                 (define: x : Any (vector 1 2 3))
                 (if (vector? x) (vector-ref x 0) #f))

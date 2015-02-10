@@ -3,7 +3,8 @@
 (require "../utils/utils.rkt"
          (rep type-rep rep-utils)
          (types union subtype resolve utils)
-         racket/match)
+         racket/match
+         racket/stream)
 
 (provide (rename-out [*remove remove]) overlap)
 
@@ -56,6 +57,8 @@
          ;; lots of things are sequences, but not values where sequence? produces #f
          [(list-no-order (Sequence: _) (Value: v)) (sequence? v)]
          [(list-no-order (Sequence: _) _) #t]
+         [(list-no-order (Stream: _) (Value: v)) (stream? v)]
+         [(list-no-order (Stream: _) _) #t]
          ;; Values where evt? produces #f cannot be Evt
          [(list-no-order (Evt: _) (Value: v)) (evt? v)]
          [(list-no-order (Pair: _ _) _) #f]

@@ -515,6 +515,8 @@
      `(Refinement ,(t->s parent) ,(syntax-e p?))]
     [(Sequence: ts)
      `(Sequenceof ,@(map t->s ts))]
+    [(Stream: ts)
+     `(Streamof ,@(map t->s ts))]
     [(Error:) 'Error]
     [(fld: t a m) `(fld ,(type->sexp t))]
     [else `(Unknown Type: ,(struct->vector type))]

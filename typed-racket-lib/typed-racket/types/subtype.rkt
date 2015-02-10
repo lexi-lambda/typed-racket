@@ -292,8 +292,6 @@
          ;; sequences are covariant
          [((Sequence: ts) (Sequence: ts*))
           (subtypes* A0 ts ts*)]
-         [((Listof: t) (Sequence: (list t*)))
-          (subtype* A0 t t*)]
          [((Pair: t1 t2) (Sequence: (list t*)))
           (subtype-seq A0 (subtype* t1 t*) (subtype* t2 (-lst t*)))]
          [((MListof: t) (Sequence: (list t*)))
@@ -356,6 +354,13 @@
          [((Hashtable: k v) (Sequence: (list k* v*)))
           (subtypes* A0 (list k v) (list k* v*))]
          [((Set: t) (Sequence: (list t*)))
+          (subtype* A0 t t*)]
+         ;; streams are like sequences, but restricted
+         [((Stream: ts) (Stream: ts*))
+          (subtypes* A0 ts ts*)]
+         [((Stream: ts) (Sequence: ts*))
+          (subtypes* A0 ts ts*)]
+         [((Listof: t) (Stream: (list t*)))
           (subtype* A0 t t*)]
          ;; special-case for case-lambda/union with only one argument              
          [((Function: arr1) (Function: (list arr2)))
