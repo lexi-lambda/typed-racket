@@ -13,6 +13,7 @@
   type-refinement
   typed-struct
   typed-struct/exec
+  typed-generics
   typed-require
   typed-require/struct
   predicate-assertion
@@ -36,6 +37,7 @@
  define-type-internal
  define-typed-struct-internal
  define-typed-struct/exec-internal
+ define-typed-generics-internal
  assert-predicate-internal
  declare-refinement-internal
  :-internal
@@ -111,6 +113,8 @@
     (define-typed-struct-internal . :define-typed-struct-body)]
   [typed-struct/exec
     (define-typed-struct/exec-internal nm ([fields:id : types] ...) proc-type)]
+  [typed-generics
+   (define-typed-generics-internal name:id type:id [method-name:id method-type] ...)]
   [typed-require
     (require/typed-internal name type)]
   [typed-require/struct

@@ -406,6 +406,14 @@
 (def-type StructTypeTop () [#:fold-rhs #:base] [#:key 'struct-type])
 (def-type StructType ([s (or/c F? B? Struct?)]) [#:key 'struct-type])
 
+;; not a type; used by Generic
+(def-type method ([t Type/c] [name identifier?]))
+
+;; a generic interface
+(def-type Generic ([name identifier?]
+                   [methods (listof method?)])
+  [#:intern (list (hash-id name))])
+
 ;; the supertype of all of these values
 (def-type BoxTop () [#:fold-rhs #:base] [#:key 'box])
 (def-type Weak-BoxTop () [#:fold-rhs #:base] [#:key 'weak-box])

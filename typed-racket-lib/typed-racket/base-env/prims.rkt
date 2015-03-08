@@ -34,6 +34,7 @@ This file defines two sorts of primitives. All of them are provided into any mod
                      [define-typed-struct define-struct]
                      [-struct struct]
                      [-struct struct:]
+                     [-define-generics define-generics]
                      [lambda: λ:]
                      [-lambda lambda]
                      [-lambda λ]
@@ -786,6 +787,71 @@ This file defines two sorts of primitives. All of them are provided into any mod
                            [sel (nm -> ty)]) ...)))]))
 
   (values (rts #t) (rts #f))))
+
+#;(define-generics printable : Printable
+    [(gen-print printable [port])
+     : (Printable Output-Port -> Void)]
+    [(gen-port-print port printable)
+     : (Output-Port Printable -> Void)]
+    [(gen-print* printable [port] #:width width #:height [height])
+     : ([Printable #:width width] [port #:height height] . -> . Void)]
+    ; alternative syntax, too?
+    [(gen-print [printable : Printable] [[port] : Output-Port]) -> Void])
+
+(require racket/generic)
+(define-syntax (-define-generics stx)
+  ;; no options are currently supported
+  (define-splicing-syntax-class generic-options
+    #:description "generic interface declaration options")
+  
+  (define-splicing-syntax-class generic-name
+    #:description "generic interface name (with optional type name)"
+    #:attributes (name type)
+    #:literals (:)
+    (pattern (~seq name:id : type:id))
+    (pattern (~seq name:id) #:attr type #'name))
+  
+  (define-syntax-class method-declaration
+    #:description "[(name . formals ...) : type]"
+    #:attributes (name rest type
+                       [argument 1]
+                       [argument.name 1]
+                       [argument.kw 1]
+                       [argument.optional? 1])
+    #:literals (:)
+    (pattern [(name:id argument:method-argument ... . rest:id)
+              : type:expr])
+    (pattern [(name:id argument:method-argument ...)
+              : type:expr]
+             #:attr rest #'()))
+  
+  (define-splicing-syntax-class method-argument
+    #:description "generic method signature argument"
+    #:attributes (name kw optional?)
+    #:literals (:)
+    (pattern (~seq name:id) #:attr kw #f #:attr optional? #f)
+    (pattern (~seq [name:id]) #:attr kw #f #:attr optional? #t)
+    (pattern (~seq kw:keyword name:id) #:attr optional? #f)
+    (pattern (~seq kw:keyword [name:id]) #:attr optional? #t))
+  
+  (syntax-parse stx
+    [(_ name:generic-name method:method-declaration ...)
+     ; matching the args as sequences wraps them in lists, so we need to unwrap them
+     (define/with-syntax (method-signature ...)
+       (for/list ([name (in-list (syntax->list #'(method.name ...)))]
+                  [args (in-list (syntax->list #'((method.argument ...) ...)))]
+                  [rest (in-list (syntax->list #'(method.rest ...)))])
+         (define unwrapped-args
+           (apply append (map syntax->list (syntax->list args))))
+         #`(#,name #,@unwrapped-args . #,rest)))
+     (define/with-syntax def-gens
+       (ignore (quasisyntax/loc stx
+                 (define-generics name.name method-signature ...))))
+     (define/with-syntax def-gens-internal
+       (quasisyntax/loc stx
+         (define-typed-generics-internal name.name name.type
+           [method.name method.type] ...)))
+     #'(begin def-gens def-gens-internal)]))
 
 (define-syntax (-do stx)
   (syntax-parse stx #:literals (:)

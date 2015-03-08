@@ -41,6 +41,12 @@
        (tc/struct null #'t.nm (syntax->list #'(t.fields ...)) (syntax->list #'(t.types ...))
                   #:proc-ty #'t.proc-type)])))
 
+(define (parse-typed-generics form)
+  (parameterize ([current-orig-stx form])
+    (syntax-parse form
+      [t:typed-generics
+       (tc/generics)])))
+
 (define (type-vars-of-struct form)
   (syntax-parse form
     [t:typed-struct (attribute t.tvars)]
